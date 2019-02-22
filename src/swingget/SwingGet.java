@@ -1,27 +1,27 @@
 /** 
 * SwingGet
+*
+* Really basic http GET with a swing inerface
+*
+* @author johnsl
 */
-/*
- * Really basic http GET with a swing inerface
- */
-
-/**
- * @author 
- */
 
 package swingget;
 
+// IO imports
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+// NET imports
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+// AWT imports
 import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.event.*;
 
-// SWING IMPORTS
+// SWING imports
 import javax.swing.JFrame ;
 import javax.swing.GroupLayout;
 import javax.swing.JLabel ;
@@ -31,29 +31,23 @@ import javax.swing.JTextArea ;
 import javax.swing.JScrollPane ;
 import javax.swing.JComponent ;
 
-/**
- * 
- * @author
- */
 public class SwingGet 
             extends JFrame 
             implements ActionListener
             
 {
-    // class constants
-    
-    private final String USER_AGENT = "Mozilla/5.0";
-    
+    // class constants 
+    private final String USER_AGENT = "Mozilla/5.0";  // Any browser (or junk text) will do     
     private static final long serialVersionUID = 1L;
     public static final String TITLE = "Swing GET (V 1.00 21/02/2019)" ;
     public static final String NEWLINE = "\n";
     
     // class variables
     static boolean DEBUG = true ;
-    static Integer DEBUGLEVEL = 9 ;
+    static Integer DEBUGLEVEL = 9 ;  // messages to the text area are filtered by this level
        
-    static String page ;
-    static String url;
+    static String page ;  // The response content 
+    static String url;  // The user supplied url - defaults to http://www.google.com/
     
     // gui components - all within the class's JFrame
     static JLabel urlLabel ;    
@@ -71,34 +65,44 @@ public class SwingGet
     public SwingGet()
     {
         initUI();
-        println(9,"In SwingGet Class Constructor");
+        println(9,"In SwingGet Class Constructor"); // doesnt't work - too early to call it.
     } // SwingGet()
     
     private void initUI()
     {
+    	// define the gui components being used
         urlLabel = new JLabel ( "URL : " ) ;
 	urlText = new JTextField ( 60 ) ;
         goButton = new JButton ( goButtonText ) ;
         clearTextButton = new JButton ( clearTextButtonText ) ;
+	// JTextArea is within a JScrollPane
         reportArea = new JTextArea( "Output : \n", 20, 0  ) ;
         reportArea.setEditable(false);
         reportArea.setLineWrap(true);
         reportArea.setWrapStyleWord(true);
         reportScrollPane = new JScrollPane(reportArea);
         
+	// puth the gui components into the layout 
+	// note comments to keep track of numbers - becomes important with complex layouts	
         createLayout (
                     urlLabel, // item 0  
                     urlText,
                     goButton,
                     clearTextButton,
-                    reportScrollPane );
+                    reportScrollPane // item 4
+		    );
         
+	// basic window stuff
         setTitle ( TITLE );
         setLocationRelativeTo ( null ) ;
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-    
-        urlText.setText ( "http://www.irishcoinage.com/J01269.HTM" ) ;
         
+	// default value to help the user under what should be entered
+	// should be set to something even "" will do
+        urlText.setText ( "http://www.google.com/" ) ; 
+        
+	// add the listeners to the components which need to trigger actions
+	// note - changing the URL text is not set to trigger anything
         goButton.addActionListener(this);
         clearTextButton.addActionListener(this);
         
