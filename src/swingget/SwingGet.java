@@ -97,8 +97,7 @@ public class SwingGet
         setLocationRelativeTo ( null ) ;
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         
-	// default value to help the user under what should be entered
-	// should be set to something even "" will do
+	// default value to help the user understand what should be entered
         urlText.setText ( "http://www.google.com/" ) ; 
         
 	// add the listeners to the components which need to trigger actions
@@ -223,20 +222,18 @@ public class SwingGet
             // Make sure the newest text is visible
             reportArea.setCaretPosition(reportArea.getDocument().getLength());
 
-            // attempt to update report area after each message is appended
-            // this isn't working - why not ?
+            // update report area after each message is appended
             reportArea.repaint() ;	
         }
     } /* println */    
-    
-
-     /**
-     * 
-     * @param url - String : full URL 
-     * @return String : unmodified page contents
-     * @throws Exception - not handled
-     *
-     */
+   
+    /**
+    * 
+    * @param url - String : full URL 
+    * @return String : unmodified page contents
+    * @throws Exception - not handled
+    *
+    */
     private String getPage ( String url ) 
                             throws Exception
     // This method throws an exception back to its caller
@@ -245,7 +242,6 @@ public class SwingGet
     // if further diagnosis is needed then use try and catch within this method
     // and don't throw the Exception back to the caller.
     {
-
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
@@ -269,7 +265,7 @@ public class SwingGet
             // println(inputLine);
             response.append(inputLine);
         }
-
+	
         in.close();			
 
         return response.toString() ;
