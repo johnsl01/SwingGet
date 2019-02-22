@@ -32,8 +32,8 @@ import javax.swing.JScrollPane ;
 import javax.swing.JComponent ;
 
 public class SwingGet 
-            extends JFrame 
-            implements ActionListener
+            extends JFrame   // because it needs to have a Swing GUI interface
+            implements ActionListener  // because user gui interaction has to trigger actions
             
 {
     // class constants 
@@ -82,7 +82,7 @@ public class SwingGet
         reportArea.setWrapStyleWord(true);
         reportScrollPane = new JScrollPane(reportArea);
         
-	// puth the gui components into the layout 
+	// put the gui components into the layout 
 	// note comments to keep track of numbers - becomes important with complex layouts	
         createLayout (
                     urlLabel, // item 0  
@@ -117,6 +117,17 @@ public class SwingGet
         gl.setAutoCreateContainerGaps(true);
         gl.setAutoCreateGaps(true);
         
+	// this is a really tedious mechanism
+	// the horizontal and vertical groups define the same stuff
+	// but horizontal is parallel then sequential groups
+	// whereas vertical is sequental then parallel groups
+	// it becomes very messy for complex gui layouts
+	// and arguement numbering makes it easy to mess up
+	// there is probably a better way - but this works.
+	// The layout we want here is :
+	//   0    1   :      urlLabel       urlText
+	//   2    3   :      goButton       cleartextButton
+	//      4     :           reportSrollPane
         gl.setHorizontalGroup (
             gl.createParallelGroup() 
                 .addGroup(gl.createSequentialGroup()
@@ -141,8 +152,7 @@ public class SwingGet
                 )
                 .addComponent(arg[4]) 
         );        
-        gl.linkSize(arg[1]);
-		
+        gl.linkSize(arg[1])		
 	pack();        
     }  // createLayout ()      
     
@@ -168,12 +178,12 @@ public class SwingGet
             }
             catch (Exception f)
             {
-                println( 0, "oops .. failed to get page \n" ) ;
+                println( 0, "Oops .. failed to get page \n" ) ;
             }
-            }
+        }
         else if ( actionCommandText.equals( clearTextButtonText ) )
         {
-            // println( 3, "Clear Inputs Button Pressed .... " ) ;
+            // println( 3, "Clear Results Button Pressed .... " ) ; // duh ! 
             reportArea.setText( "Output (reset) : \n" );
         }
         else 
@@ -183,16 +193,13 @@ public class SwingGet
            
     } // actionPerformed ()
     
-    
-    
-    
+        
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) 
-    {
-        
-        System.out.println("Hello World");
+    {        
+        // System.out.println("Hello World");  // console diag message 
         
         EventQueue.invokeLater
         (
@@ -201,10 +208,8 @@ public class SwingGet
                 SwingGet gui = new SwingGet();
                 gui.setVisible(true);
             }
-        );	
-        
-        
-    }
+        );	       
+    } // main()
  
     public static void println ( int level, String message )
     {		
@@ -225,14 +230,20 @@ public class SwingGet
     } /* println */    
     
 
-/**
+     /**
      * 
      * @param url - String : full URL 
      * @return String : unmodified page contents
      * @throws Exception - not handled
+     *
      */
     private String getPage ( String url ) 
                             throws Exception
+    // This method throws an exception back to its caller
+    // so it should be used in a try {} catch {} structure
+    // I just use catch to issue an error message (see the ActionEvent for the goButton)
+    // if further diagnosis is needed then use try and catch within this method
+    // and don't throw the Exception back to the caller.
     {
 
         URL obj = new URL(url);
@@ -244,8 +255,8 @@ public class SwingGet
         //add request header
         con.setRequestProperty("User-Agent", USER_AGENT);
 
-        int responseCode = con.getResponseCode();
         println(1, "\nSending 'GET' request to URL : " + url);
+	int responseCode = con.getResponseCode();
         println(1, "Response Code : " + responseCode);
 
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -264,4 +275,4 @@ public class SwingGet
         return response.toString() ;
     } /* String getPage ( String url ) */
 	 
-}
+} // Class SwingGet
