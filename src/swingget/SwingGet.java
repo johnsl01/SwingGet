@@ -1,10 +1,7 @@
 /*
- * Really basic http GET with a swing inerface
+ * Really basic http GET with a swing interface
  */
 
-/**
- * @author 
- */
 
 package swingget;
 
@@ -28,21 +25,19 @@ import javax.swing.JTextArea ;
 import javax.swing.JScrollPane ;
 import javax.swing.JComponent ;
 
-/**
- * 
- * @author
- */
+
 public class SwingGet 
             extends JFrame 
-            implements ActionListener
-            
+            implements ActionListener           
 {
-    // class constants
+
+	// class constants
+    private static final long serialVersionUID = 1L;   
     
     private final String USER_AGENT = "Mozilla/5.0";
     
-    private static final long serialVersionUID = 1L;
     public static final String TITLE = "Swing GET (V 1.00 21/02/2019)" ;
+    
     public static final String NEWLINE = "\n";
     
     // class variables
@@ -58,6 +53,7 @@ public class SwingGet
     
     static JButton goButton ;
     static String goButtonText = "GO" ;
+    
     static JButton clearTextButton ;
     static String clearTextButtonText = "Clear Results" ;
     
@@ -99,8 +95,7 @@ public class SwingGet
         urlText.setText ( "http://www.irishcoinage.com/J01269.HTM" ) ;
         
         goButton.addActionListener(this);
-        clearTextButton.addActionListener(this);
-        
+        clearTextButton.addActionListener(this);        
     } // initUI()  
     
     
@@ -157,9 +152,9 @@ public class SwingGet
             try 
             {
                 url = urlText.getText();
-                println( 0, url + NEWLINE ) ;
+                println( 0, url ) ;
                 page = getPage(url);
-                println( 0, page + NEWLINE + NEWLINE ) ;
+                println( 0, "Content : " + NEWLINE + page + NEWLINE ) ;
             }
             catch (Exception f)
             {
@@ -181,19 +176,16 @@ public class SwingGet
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) 
-    {        
-        System.out.println("Hello World");
-        
+    public static void main (String[] args) 
+    {                
         EventQueue.invokeLater
-        (
-            () -> 
+        ( () -> 
             {
                 SwingGet gui = new SwingGet();
                 gui.setVisible(true);
             }
         );	                
-    }
+    } // main ()
 
     
     public static void println ( int level, String message )
@@ -212,7 +204,7 @@ public class SwingGet
             // this isn't working - why not ?
             reportArea.repaint() ;	
         }
-    } /* println */    
+    } // println ()    
     
 
 /**
@@ -224,33 +216,49 @@ public class SwingGet
     private String getPage ( String url ) 
                             throws Exception
     {
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+    	int responseCode ;
+    	String responseMessage ;
+    	String headerFieldkey ;
+    	String headerField ;
+    	
+    	URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection() ;
 
         // optional default is GET
-        con.setRequestMethod("GET");
+        con.setRequestMethod("GET") ;
 
         //add request header
-        con.setRequestProperty("User-Agent", USER_AGENT);
+        con.setRequestProperty("User-Agent", USER_AGENT) ;
+               
+        println(1, "\nSending 'GET' request to URL : " + url + NEWLINE) ;
+        responseCode = con.getResponseCode() ;
+        println(1, "Response Code : " + responseCode) ;
+        responseMessage = con.getResponseMessage() ;
+        println(1, "Response Message : " + responseMessage + NEWLINE) ;
+        
+        for (int i=1; i<12; i++) 
+        {
+        	headerFieldkey = con.getHeaderFieldKey(i) ;
+        	headerField = con.getHeaderField(i) ;        	
+        	println(1, "Header Field " + i + " : " + headerFieldkey + " : " + headerField) ;
+        }
+        println(1, "") ;
 
-        int responseCode = con.getResponseCode();
-        println(1, "\nSending 'GET' request to URL : " + url);
-        println(1, "Response Code : " + responseCode);
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()) ) ;
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuffer response = new StringBuffer() ;
 
         while ((inputLine = in.readLine()) != null) 
         {
             // output individual lines
-            // println(inputLine);
-            response.append(inputLine);
+            // println(inputLine) ;
+            response.append(inputLine) ;
+            response.append(NEWLINE) ;
         }
-
-        in.close();			
+        in.close() ;			
 
         return response.toString() ;
     } /* String getPage ( String url ) */
 	 
 } // Class SwingGet
+
